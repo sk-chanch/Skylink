@@ -88,7 +88,7 @@ struct OpenWeatherForecastItem: Decodable {
     let clouds: OpenWeatherClouds
     let wind: OpenWeatherWind
     let visibility: Int
-    let pop: Double? // โอกาสฝนตก (0-1)
+    let pop: Double? // rain change (0-1)
     let rain: OpenWeatherRain?
     let sys: OpenWeatherForecastSys?
     let dt_txt: String

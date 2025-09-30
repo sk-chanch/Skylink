@@ -14,8 +14,8 @@ public struct WeatherData {
     public let humidity: Double
     public let windSpeed: Double
     public let pressure: Double
-    public let uvIndex: Int
-    public let visibility: Double
+    public let uvIndex: Int?
+    public let visibility: Double?
     
     public let location: String
     public let timestamp: Date
@@ -29,7 +29,7 @@ public struct DailyForecast {
     public let highTemperature: Double
     public let lowTemperature: Double
     public let condition: WeatherCondition
-    public let precipitationChance: Double
+    public let precipitationChance: Double?
     public let sunriseTime: Date?
     public let sunsetTime: Date?
 }

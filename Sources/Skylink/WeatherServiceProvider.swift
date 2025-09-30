@@ -9,4 +9,5 @@
 public enum WeatherServiceProvider {
     case native
     case openWeather(apiKey: String)
+    case tmdWeather(apiKey: String)
 }

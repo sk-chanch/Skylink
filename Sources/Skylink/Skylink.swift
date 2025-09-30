@@ -13,6 +13,8 @@ public actor Skylink {
             return try createNativeAdapter()
         case .openWeather(let apiKey):
             return OpenWeatherAdapter(apiKey: apiKey)
+        case .tmdWeather(let apiKey):
+            return TMDWeatherAdapter(apiKey: apiKey)
         }
     }
     

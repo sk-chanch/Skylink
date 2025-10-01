@@ -10,17 +10,27 @@ import CoreLocation
 actor OpenWeatherAdapter: WeatherAdapter {
     private let apiKey: String
     private let baseURL = "https://api.openweathermap.org/data/2.5"
+    private let configuration: SkylinkConfiguration
                                                                       
-    init(apiKey: String) {
+    init(apiKey: String,
+         configuration: SkylinkConfiguration) {
         self.apiKey = apiKey
+        self.configuration = configuration
     }
     
     func fetchWeather(for location: CLLocation) async throws -> WeatherData {
+        let components = Locale.components(fromIdentifier: configuration.local.identifier)
+        var languageCode = components[NSLocale.Key.languageCode.rawValue] ?? "th"
+       
+        if languageCode == "zh" {
+            languageCode = "zh_cn"
+        }
+        
         // create URL for current weather
-        let currentWeatherURL = URL(string: "\(baseURL)/weather?lat=\(location.coordinate.latitude)&lon=\(location.coordinate.longitude)&units=metric&appid=\(apiKey)")!
+        let currentWeatherURL = URL(string: "\(baseURL)/weather?lat=\(location.coordinate.latitude)&lon=\(location.coordinate.longitude)&units=metric&appid=\(apiKey)&lang=\(languageCode)")!
         
         // create URL for forecast
-        let forecastURL = URL(string: "\(baseURL)/forecast?lat=\(location.coordinate.latitude)&lon=\(location.coordinate.longitude)&units=metric&appid=\(apiKey)")!
+        let forecastURL = URL(string: "\(baseURL)/forecast?lat=\(location.coordinate.latitude)&lon=\(location.coordinate.longitude)&units=metric&appid=\(apiKey)&lang=\(languageCode)")!
         
         // fetch data parallel
         async let (currentWeatherData, _) = URLSession.shared.data(from: currentWeatherURL)
@@ -34,12 +44,18 @@ actor OpenWeatherAdapter: WeatherAdapter {
         let forecastResponse = try JSONDecoder().decode(OpenWeatherForecastResponse.self, from: forecastResponseData)
         
         // convert to WeatherData
-        return convertToWeatherData(currentWeather: currentWeatherResponse, forecast: forecastResponse)
+        return await convertToWeatherData(currentWeather: currentWeatherResponse,
+                                          forecast: forecastResponse,
+                                          location: location)
     }
     
-    private func convertToWeatherData(currentWeather: OpenWeatherCurrentResponse, forecast: OpenWeatherForecastResponse) -> WeatherData {
+    private func convertToWeatherData(currentWeather: OpenWeatherCurrentResponse,
+                                      forecast: OpenWeatherForecastResponse,
+                                      location: CLLocation) async -> WeatherData {
+        let (_, placeMark) = await getLocationName(from: location, locale: configuration.local)
         // create location name
-        let locationName = currentWeather.name + (currentWeather.sys.country.isEmpty ? "" : ", \(currentWeather.sys.country)")
+        let province = placeMark?.administrativeArea ?? ""
+        let locationName = (currentWeather.name) + (province.isEmpty ? "": ", \(province)")
         
         // convert forecast list to hourly forecasts
         let hourlyForecasts = forecast.list.prefix(24).map { item in
@@ -66,7 +82,9 @@ actor OpenWeatherAdapter: WeatherAdapter {
             location: locationName,
             timestamp: Date(timeIntervalSince1970: TimeInterval(currentWeather.dt)),
             forecastDaily: dailyForecasts,
-            forecastHourly: hourlyForecasts
+            forecastHourly: hourlyForecasts,
+            placemark: placeMark,
+            locale: configuration.local
         )
     }
     

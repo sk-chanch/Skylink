@@ -1,0 +1,26 @@
+/* 
+  Localizable.strings
+  Skylink
+
+  Created by MK-Mini on 1/10/2568 BE.
+  
+*/
+
+"weather.condition.clear" = "晴朗";
+"weather.condition.mostlyClear" = "大部分晴朗";
+"weather.condition.partlyCloudy" = "局部多云";
+"weather.condition.mostlyCloudy" = "多云";
+"weather.condition.cloudy" = "阴天";
+"weather.condition.rain" = "下雨";
+"weather.condition.drizzle" = "毛毛雨";
+"weather.condition.sunShowers" = "太阳雨";
+"weather.condition.thunderstorms" = "雷阵雨";
+"weather.condition.scatteredThunderstorms" = "零星雷阵雨";
+"weather.condition.isolatedThunderstorms" = "局部雷阵雨";
+"weather.condition.heavyRain" = "大雨";
+"weather.condition.breezy" = "微风至中等风";
+"weather.condition.windy" = "大风";
+"weather.condition.hot" = "炎热";
+"weather.condition.haze" = "雾霾 / 灰尘";
+"weather.condition.smoky" = "烟雾或霾";
+"weather.condition.unknown" = "未知";

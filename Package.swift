@@ -5,6 +5,7 @@ import PackageDescription
 
 let package = Package(
     name: "Skylink",
+    defaultLocalization: "en", 
     platforms: [
         .iOS(.v13),
         .macOS(.v12)
@@ -21,7 +22,10 @@ let package = Package(
         // Targets can depend on other targets in this package and products from dependencies.
         .target(
             name: "Skylink",
-            dependencies: []),
+            dependencies: [],
+            resources: [
+                .process("Resources")
+            ]),
         .testTarget(
             name: "SkylinkTests",
             dependencies: ["Skylink"]

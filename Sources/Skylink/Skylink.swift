@@ -7,30 +7,31 @@
 
 // MARK: - Service Factory
 public actor Skylink {
-    public static func create(provider: WeatherServiceProvider) throws -> WeatherAdapter {
+    public static func create(provider: WeatherServiceProvider,
+                              configuration: SkylinkConfiguration = .init()) throws -> WeatherAdapter {
         switch provider {
         case .native:
-            return try createNativeAdapter()
+            return try createNativeAdapter(configuration: configuration)
         case .openWeather(let apiKey):
-            return OpenWeatherAdapter(apiKey: apiKey)
+            return OpenWeatherAdapter(apiKey: apiKey, configuration: configuration)
         case .tmdWeather(let apiKey):
-            return TMDWeatherAdapter(apiKey: apiKey)
+            return TMDWeatherAdapter(apiKey: apiKey, configuration: configuration)
         }
     }
     
-    private static func createNativeAdapter() throws -> WeatherAdapter {
+    private static func createNativeAdapter(configuration: SkylinkConfiguration) throws -> WeatherAdapter {
         if #available(iOS 16.0, *) {
-            return NativeWeatherAdapter()
+            return NativeWeatherAdapter(configuration: configuration)
         } else {
             throw SkylinkError.unsupportedPlatform("Native WeatherKit requires iOS 16.0 or later")
         }
     }
     
-    public static func createDefault(fallbackAPIKey: String) -> WeatherAdapter {
+    public static func createDefault(fallbackAPIKey: String, configuration: SkylinkConfiguration) -> WeatherAdapter {
         if #available(iOS 16.0, *) {
-            return NativeWeatherAdapter()
+            return NativeWeatherAdapter(configuration: configuration)
         } else {
-            return OpenWeatherAdapter(apiKey: fallbackAPIKey)
+            return OpenWeatherAdapter(apiKey: fallbackAPIKey, configuration: configuration)
         }
     }
 }

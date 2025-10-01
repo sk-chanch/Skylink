@@ -10,9 +10,12 @@ import CoreLocation
 actor TMDWeatherAdapter: WeatherAdapter {
     private let apiKey: String
     private let baseURL = "https://data.tmd.go.th/nwpapi/v1/forecast/location"
+    private let configuration: SkylinkConfiguration
                                                                       
-    init(apiKey: String) {
+    init(apiKey: String,
+         configuration: SkylinkConfiguration) {
         self.apiKey = apiKey
+        self.configuration = configuration
     }
     
     func fetchWeather(for location: CLLocation) async throws -> WeatherData {
@@ -30,13 +33,15 @@ actor TMDWeatherAdapter: WeatherAdapter {
         
         var hourlyWeatherRequest = URLRequest(url: hourlyWeatherURL)
         hourlyWeatherRequest.addValue("Bearer \(apiKey)", forHTTPHeaderField: "authorization")
+        let hourlyRequestCopy = hourlyWeatherRequest
         
         var dailyWeatherRequest = URLRequest(url: dailyWeatherURL)
         dailyWeatherRequest.addValue("Bearer \(apiKey)", forHTTPHeaderField: "authorization")
+        let dailyRequestCopy = dailyWeatherRequest
         
         // fetch data parallel
-        async let (hourlyWeatherData, _) = URLSession.shared.data(for: hourlyWeatherRequest)
-        async let (dailyWeatherData, _) = URLSession.shared.data(for: dailyWeatherRequest)
+        async let (hourlyWeatherData, _) = URLSession.shared.data(for: hourlyRequestCopy)
+        async let (dailyWeatherData, _) = URLSession.shared.data(for: dailyRequestCopy)
         
         // wait all data
         let (hourlyData, dailyData) = try await (hourlyWeatherData, dailyWeatherData)
@@ -57,7 +62,8 @@ actor TMDWeatherAdapter: WeatherAdapter {
                                       dailyWeather: TMDWeatherResponse,
                                       location: CLLocation) async -> WeatherData {
         // create location name
-        let locationName = await getLocationName(from: location)
+        let (placeName, placemark) = await getLocationName(from: location,
+                                                           locale: configuration.local)
         
         // convert forecast list to hourly forecasts
         let hourlyForecasts = hourlyWeather.weatherForecasts.first?.forecasts.map { item in
@@ -78,10 +84,12 @@ actor TMDWeatherAdapter: WeatherAdapter {
             pressure: hourlyWeather.weatherForecasts.first?.forecasts.first?.data.slp ?? 0,
             uvIndex: nil,
             visibility: nil,
-            location: locationName,
+            location: placeName,
             timestamp: convertDateTime(hourlyWeather.weatherForecasts.first?.forecasts.first?.time),
             forecastDaily: dailyForecasts,
-            forecastHourly: hourlyForecasts
+            forecastHourly: hourlyForecasts,
+            placemark: placemark,
+            locale: configuration.local
         )
         
         return currentWeather

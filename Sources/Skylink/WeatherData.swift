@@ -6,7 +6,7 @@
 //
 
 import Foundation
-
+import CoreLocation
 
 public struct WeatherData {
     public let temperature: Double
@@ -21,6 +21,39 @@ public struct WeatherData {
     public let timestamp: Date
     public let forecastDaily: [DailyForecast]?
     public let forecastHourly: [HourlyForecast]?
+    public let placemark: CLPlacemark?
+    public let locale: Locale
+    
+    public let localizedCondition: String
+    
+    init(temperature: Double,
+         condition: WeatherCondition,
+         humidity: Double,
+         windSpeed: Double,
+         pressure: Double,
+         uvIndex: Int?,
+         visibility: Double?,
+         location: String,
+         timestamp: Date,
+         forecastDaily: [DailyForecast]?,
+         forecastHourly: [HourlyForecast]?,
+         placemark: CLPlacemark?,
+         locale: Locale) {
+        self.temperature = temperature
+        self.condition = condition
+        self.humidity = humidity
+        self.windSpeed = windSpeed
+        self.pressure = pressure
+        self.uvIndex = uvIndex
+        self.visibility = visibility
+        self.location = location
+        self.timestamp = timestamp
+        self.forecastDaily = forecastDaily
+        self.forecastHourly = forecastHourly
+        self.placemark = placemark
+        self.locale = locale
+        self.localizedCondition = condition.description(locale: locale)
+    }
 }
 
 

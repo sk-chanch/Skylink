@@ -12,6 +12,11 @@ import CoreLocation
 @available(iOS 16.0, *)
 actor NativeWeatherAdapter: WeatherAdapter {
     private let weatherService = WeatherKit.WeatherService.shared
+    private let configuration: SkylinkConfiguration
+    
+    init(configuration: SkylinkConfiguration) {
+        self.configuration = configuration
+    }
     
     func fetchWeather(for location: CLLocation) async throws -> WeatherData {
         do {
@@ -36,6 +41,8 @@ extension NativeWeatherAdapter {
    
     func convertWeatherData(from weatherData: WeatherKit.Weather, location: CLLocation) async -> WeatherData {
         let currentWeather = weatherData.currentWeather
+        let (placeName, placemark) = await getLocationName(from: location, locale: configuration.local)
+        
         return .init(temperature: currentWeather.temperature.value,
                      condition: currentWeather.condition.toWeatherDataCondition(),
                      humidity: currentWeather.humidity,
@@ -43,10 +50,12 @@ extension NativeWeatherAdapter {
                      pressure: currentWeather.pressure.value,
                      uvIndex: currentWeather.uvIndex.value,
                      visibility: currentWeather.visibility.value,
-                     location: await getLocationName(from: location),
+                     location: placeName,
                      timestamp: weatherData.currentWeather.date,
                      forecastDaily: mapDailyForecast(weatherData.dailyForecast),
-                     forecastHourly: mapHourlyForecast(weatherData.hourlyForecast))
+                     forecastHourly: mapHourlyForecast(weatherData.hourlyForecast),
+                     placemark: placemark,
+                     locale: configuration.local)
     }
     
     private func mapDailyForecast(_ forecast: Forecast<DayWeather>) -> [DailyForecast] {

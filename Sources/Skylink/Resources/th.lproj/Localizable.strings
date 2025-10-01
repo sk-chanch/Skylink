@@ -1,0 +1,27 @@
+/* 
+  Localizable.strings
+  Skylink
+
+  Created by MK-Mini on 1/10/2568 BE.
+  
+*/
+
+/* Weather Conditions */
+"weather.condition.clear" = "ท้องฟ้าแจ่มใส";
+"weather.condition.mostlyClear" = "ท้องฟ้าแจ่มใสเป็นส่วนใหญ่";
+"weather.condition.partlyCloudy" = "มีเมฆบางส่วน";
+"weather.condition.mostlyCloudy" = "เมฆมาก";
+"weather.condition.cloudy" = "เมฆปกคลุม";
+"weather.condition.rain" = "ฝนตก";
+"weather.condition.drizzle" = "ฝนโปรย";
+"weather.condition.sunShowers" = "ฝนตกแต่มีแดด";
+"weather.condition.thunderstorms" = "ฝนฟ้าคะนอง";
+"weather.condition.scatteredThunderstorms" = "ฝนฟ้าคะนองกระจาย";
+"weather.condition.isolatedThunderstorms" = "ฝนฟ้าคะนองบางพื้นที่";
+"weather.condition.heavyRain" = "ฝนตกหนัก";
+"weather.condition.breezy" = "ลมเบา–ปานกลาง";
+"weather.condition.windy" = "ลมแรง";
+"weather.condition.hot" = "อากาศร้อน";
+"weather.condition.haze" = "หมอกควัน / ฝุ่นละออง";
+"weather.condition.smoky" = "ควันไฟหรือหมอกควัน";
+"weather.condition.unknown" = "ไม่ทราบ";

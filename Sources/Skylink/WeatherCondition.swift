@@ -6,6 +6,7 @@
 //
 
 import WeatherKit
+import Foundation
 
 public enum WeatherCondition: String, Codable {
     case clear
@@ -68,45 +69,49 @@ public enum WeatherCondition: String, Codable {
         }
     }
     
-    public var description: String {
+    public func description(locale: Locale = .current) -> String {
+        var key = ""
+        
         switch self {
         case .clear:
-            return "ท้องฟ้าแจ่มใส"
+            key = "weather.condition.clear"
         case .mostlyClear:
-            return "ท้องฟ้าแจ่มใสเป็นส่วนใหญ่"
+            key = "weather.condition.mostlyClear"
         case .partlyCloudy:
-            return "มีเมฆบางส่วน"
+            key = "weather.condition.partlyCloudy"
         case .mostlyCloudy:
-            return "เมฆมาก"
+            key = "weather.condition.mostlyCloudy"
         case .cloudy:
-            return "เมฆปกคลุม"
+            key = "weather.condition.cloudy"
         case .rain:
-            return "ฝนตก"
+            key = "weather.condition.rain"
         case .drizzle:
-            return "ฝนโปรย"
+            key = "weather.condition.drizzle"
         case .sunShowers:
-            return "ฝนตกแต่มีแดด"
+            key = "weather.condition.sunShowers"
         case .thunderstorms:
-            return "ฝนฟ้าคะนอง"
+            key = "weather.condition.thunderstorms"
         case .scatteredThunderstorms:
-            return "ฝนฟ้าคะนองกระจาย"
+            key = "weather.condition.scatteredThunderstorms"
         case .isolatedThunderstorms:
-            return "ฝนฟ้าคะนองบางพื้นที่"
+            key = "weather.condition.isolatedThunderstorms"
         case .heavyRain:
-            return "ฝนตกหนัก"
+            key = "weather.condition.heavyRain"
         case .breezy:
-            return "ลมเบา–ปานกลาง"
+            key = "weather.condition.breezy"
         case .windy:
-            return "ลมแรง"
+            key = "weather.condition.windy"
         case .hot:
-            return "อากาศร้อน"
+            key = "weather.condition.hot"
         case .haze:
-            return "หมอกควัน / ฝุ่นละออง"
+            key = "weather.condition.haze"
         case .smoky:
-            return "ควันไฟหรือหมอกควัน"
-        case .unknown:
-            return "ไม่ทราบ"
+            key = "weather.condition.smoky"
+        default:
+            key = "weather.condition.unknown"
         }
+        
+        return LocalizationHelper.localizedString(key, locale: locale)
     }
     
 }

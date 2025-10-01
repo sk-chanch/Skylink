@@ -1,0 +1,27 @@
+/* 
+  Localizable.strings
+  Skylink
+
+  Created by MK-Mini on 1/10/2568 BE.
+  
+*/
+
+/* Weather Conditions */
+"weather.condition.clear" = "Clear";
+"weather.condition.mostlyClear" = "Mostly Clear";
+"weather.condition.partlyCloudy" = "Partly Cloudy";
+"weather.condition.mostlyCloudy" = "Mostly Cloudy";
+"weather.condition.cloudy" = "Cloudy";
+"weather.condition.rain" = "Rain";
+"weather.condition.drizzle" = "Drizzle";
+"weather.condition.sunShowers" = "Sun Showers";
+"weather.condition.thunderstorms" = "Thunderstorms";
+"weather.condition.scatteredThunderstorms" = "Scattered Thunderstorms";
+"weather.condition.isolatedThunderstorms" = "Isolated Thunderstorms";
+"weather.condition.heavyRain" = "Heavy Rain";
+"weather.condition.breezy" = "Breezy";
+"weather.condition.windy" = "Windy";
+"weather.condition.hot" = "Hot";
+"weather.condition.haze" = "Haze";
+"weather.condition.smoky" = "Smoky";
+"weather.condition.unknown" = "Unknown";

@@ -10,6 +10,9 @@ import CoreLocation
 
 public struct WeatherData {
     public let temperature: Double
+    public let tempMin: Double?
+    public let tempMax: Double?
+    public let feelsLike: Double?
     public let condition: WeatherCondition
     public let humidity: Double
     public let windSpeed: Double
@@ -27,6 +30,9 @@ public struct WeatherData {
     public let localizedCondition: String
     
     init(temperature: Double,
+         tempMin: Double?,
+         tempMax: Double?,
+         feelsLike: Double?,
          condition: WeatherCondition,
          humidity: Double,
          windSpeed: Double,
@@ -53,6 +59,9 @@ public struct WeatherData {
         self.placemark = placemark
         self.locale = locale
         self.localizedCondition = condition.description(locale: locale)
+        self.tempMin = tempMin
+        self.tempMax = tempMax
+        self.feelsLike = feelsLike
     }
 }
 

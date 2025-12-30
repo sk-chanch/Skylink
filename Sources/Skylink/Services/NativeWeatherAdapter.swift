@@ -43,7 +43,21 @@ extension NativeWeatherAdapter {
         let currentWeather = weatherData.currentWeather
         let (placeName, placemark) = await getLocationName(from: location, locale: configuration.local)
         
+        let hourlyInCurrentDay = weatherData.hourlyForecast.forecast.filter{
+            return Calendar.current.isDateInToday($0.date)
+        }
+        
+        let minTemp = hourlyInCurrentDay.map { $0.temperature.value }.min()
+        let maxTemp = hourlyInCurrentDay.map { $0.temperature.value }.max()
+        
+        let fealLike =  feelsLikeCelsius(tempC: currentWeather.temperature.value,
+                                         humidity: currentWeather.humidity,
+                                         windSpeed: currentWeather.wind.speed.value)
+        
         return .init(temperature: currentWeather.temperature.value,
+                     tempMin: minTemp,
+                     tempMax: maxTemp,
+                     feelsLike: fealLike,
                      condition: currentWeather.condition.toWeatherDataCondition(),
                      humidity: currentWeather.humidity,
                      windSpeed: currentWeather.wind.speed.value,
@@ -81,5 +95,15 @@ extension NativeWeatherAdapter {
                 precipitationChance: hourWeather.precipitationChance
             )
         }
+    }
+    
+    private func feelsLikeCelsius(tempC: Double, humidity: Double, windSpeed: Double) -> Double {
+        // calculate vapor in hPa
+        let e = humidity * 6.105 * exp((17.27 * tempC) / (237.7 + tempC))
+        
+        // calculate apparent temperature
+        let feelsLike = tempC + 0.33 * e - 0.70 * windSpeed - 4.0
+        
+        return feelsLike
     }
 }

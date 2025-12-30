@@ -58,21 +58,32 @@ actor OpenWeatherAdapter: WeatherAdapter {
         let locationName = (currentWeather.name) + (province.isEmpty ? "": ", \(province)")
         
         // convert forecast list to hourly forecasts
-        let hourlyForecasts = forecast.list.prefix(24).map { item in
-            HourlyForecast(
-                time: Date(timeIntervalSince1970: TimeInterval(item.dt)),
-                temperature: item.main.temp,
-                condition: mapWeatherCondition(item.weather.first?.id ?? 0),
-                precipitationChance: item.pop ?? 0
-            )
+        let hourlyForecasts = forecast.list
+            .map { item in
+                HourlyForecast(
+                    time: Date(timeIntervalSince1970: TimeInterval(item.dt)),
+                    temperature: item.main.temp,
+                    condition: mapWeatherCondition(item.weather.first?.id ?? 0),
+                    precipitationChance: item.pop ?? 0
+                )
+            }
+        
+        let hourslyCurrentDay = hourlyForecasts .filter{
+            return Calendar.current.isDateInToday($0.time)
         }
         
         // create daily forecasts
         let dailyForecasts = createDailyForecasts(from: forecast.list)
         
+        let tempMin = hourslyCurrentDay.compactMap{ $0.temperature }.min()
+        let tempMax = hourslyCurrentDay.compactMap{ $0.temperature }.max()
+        
         // create WeatherData from current weather
         return WeatherData(
             temperature: currentWeather.main.temp,
+            tempMin: tempMin,
+            tempMax: tempMax,
+            feelsLike: currentWeather.main.feels_like,
             condition: mapWeatherCondition(currentWeather.weather.first?.id ?? 0),
             humidity: Double(currentWeather.main.humidity) / 100.0, // convert to percentage
             windSpeed: currentWeather.wind.speed,

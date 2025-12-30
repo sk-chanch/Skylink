@@ -73,14 +73,33 @@ actor TMDWeatherAdapter: WeatherAdapter {
                            precipitationChance: 0)
         }
         
+        let hourlyInCurrentDay = hourlyForecasts?.filter{
+            return Calendar.current.isDateInToday($0.time)
+        }
+        
         let dailyForecasts = createDailyForecasts(from: dailyWeather.weatherForecasts.first?.forecasts)
+        
+        let tempMin = hourlyInCurrentDay?.compactMap{ $0.temperature }.min()
+        let tempMax = hourlyInCurrentDay?.compactMap{ $0.temperature }.max()
+        
+        let temperature = hourlyWeather.weatherForecasts.first?.forecasts.first?.data.tc ?? 0
+        let humidity = (hourlyWeather.weatherForecasts.first?.forecasts.first?.data.rh ?? 0) / 100.0
+        let windSpeed = hourlyWeather.weatherForecasts.first?.forecasts.first?.data.ws10m ?? 0
+     
+        
+        let fealLike = feelsLikeCelsius(tempC: temperature,
+                                        humidity: humidity,
+                                        windSpeed: windSpeed)
         
         // create WeatherData from current weather
         let currentWeather = WeatherData(
-            temperature: hourlyWeather.weatherForecasts.first?.forecasts.first?.data.tc ?? 0,
+            temperature: temperature,
+            tempMin: tempMin,
+            tempMax: tempMax,
+            feelsLike: fealLike,
             condition: mapWeatherCondition(hourlyWeather.weatherForecasts.first?.forecasts.first?.data.cond ?? 0),
-            humidity: (hourlyWeather.weatherForecasts.first?.forecasts.first?.data.rh ?? 0) / 100.0,
-            windSpeed: hourlyWeather.weatherForecasts.first?.forecasts.first?.data.ws10m ?? 0,
+            humidity: humidity,
+            windSpeed: windSpeed,
             pressure: hourlyWeather.weatherForecasts.first?.forecasts.first?.data.slp ?? 0,
             uvIndex: nil,
             visibility: nil,
@@ -161,5 +180,15 @@ actor TMDWeatherAdapter: WeatherAdapter {
         ]
         
         return iso8601Formatter.date(from: dateString) ?? .init()
+    }
+    
+    private func feelsLikeCelsius(tempC: Double, humidity: Double, windSpeed: Double) -> Double {
+        // calculate vapor in hPa
+        let e = humidity * 6.105 * exp((17.27 * tempC) / (237.7 + tempC))
+        
+        // calculate apparent temperature
+        let feelsLike = tempC + 0.33 * e - 0.70 * windSpeed - 4.0
+        
+        return feelsLike
     }
 }
